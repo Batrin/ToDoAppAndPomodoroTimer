@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/taskTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editTextHint"/>
+
+    <EditText
+        android:id="@+id/taskTimeTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/taskTimeTextHint"
+        android:layout_below="@id/taskTextField"/>
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/taskTimeTextField"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addButtonText"
+            android:layout_marginStart="15dp"/>
+        <Button
+            android:id="@+id/delButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delButtonText"
+            android:layout_marginLeft="30dp"/>
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clearButtonText"
+            android:layout_marginStart="30dp" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/testTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonLayout"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/taskRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/testTextView"
+        tools:listitem="@layout/single_recyclerview_item"/>
+
+</RelativeLayout>

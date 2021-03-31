@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CollegeProject</string>
+    <string name="editTextHint">Type your task here..</string>
+    <string name="taskTimeTextHint">Enter time for this task</string>
+
+    <string name="addButtonText">Add</string>
+    <string name="delButtonText">Delete</string>
+    <string name="clearButtonText">Clear</string>
+
+    <string name="signUpButtonText">Sign Up</string>
+    <string name="signInButtonText">Sign In</string>
+
+    <string name="haveAccText">Already have an account?</string>
+    <string name="backToRegistrText">Back to registration</string>
+</resources>
