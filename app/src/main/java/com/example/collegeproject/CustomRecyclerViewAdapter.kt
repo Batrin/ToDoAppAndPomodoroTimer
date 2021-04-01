@@ -5,25 +5,54 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.Toast.makeText as makeText1
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 
+private lateinit var auth: FirebaseAuth
+private lateinit var user: FirebaseUser
+private lateinit var getTaskRef: DatabaseReference
 class CustomRecyclerAdapter(private val values: List<String>) :
         RecyclerView.Adapter<CustomRecyclerAdapter.MyViewHolder>() {
     override fun getItemCount() = values.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.single_recyclerview_item, parent, false)
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
         return MyViewHolder(itemView)
 
     }
 
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.taskTextView.text = values[position]
+        var taskId = values[position]
+        var getdata = FirebaseDatabase.getInstance().reference.child(user.getUid()).child("tasks")
+        val getDataTaskObject = object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(i in snapshot.children){
+                    var taskText = snapshot.child(taskId).child("taskName").value.toString()
+                    var isTaskDone = snapshot.child(taskId).child("done").value.toString().toBoolean()
+                    holder.taskTextView.text = taskText
+                    holder.checkbox.isChecked = isTaskDone
+                    holder.checkbox.tag = taskId
+                }
+
+            }
+        }
+        getdata.addValueEventListener(getDataTaskObject)
         holder.checkbox.isChecked = false
         holder.itemView.setOnClickListener {
             holder.checkbox.toggle()
+            var checkId = holder.checkbox.tag.toString()
+            var checkBoxState = holder.checkbox.isChecked
+            getdata.child(checkId).child("done").setValue(checkBoxState)
+
         }
     }
 

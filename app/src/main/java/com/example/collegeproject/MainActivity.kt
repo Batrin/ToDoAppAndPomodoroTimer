@@ -1,22 +1,18 @@
 package com.example.collegeproject
 
-import android.media.VolumeAutomation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.single_recyclerview_item.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var auth: FirebaseAuth
     private lateinit var user: FirebaseUser
@@ -25,13 +21,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listString : List<String>
     private val taskArr = mutableListOf<String>()
     private lateinit var taskArrayAdapter:ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         taskRecyclerView.layoutManager = LinearLayoutManager(this)
-        taskRecyclerView.adapter = CustomRecyclerAdapter(taskArr)
 
         /* Получние объекта аутентификации и получение текущего авторизованного пользователя */
         auth = FirebaseAuth.getInstance()
@@ -60,9 +56,9 @@ class MainActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 taskArr.clear()
-                for(i in snapshot.children){
-                    var taskText = i.child("taskName").getValue().toString()
-                    taskArr.add(taskText)
+               snapshot.children.forEach {
+                    val keyMap: String = it.key.toString()
+                    taskArr.add(keyMap)
                     taskArrayAdapter.notifyDataSetChanged()
                 }
                 taskArr.reverse()
@@ -70,20 +66,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
         getdata.addValueEventListener(getDataListener)
-
-
-
     }
 
 
     /* Функции кнопок, которые вызываются выше */
     fun addTaskButton(){
-        val taskText = taskTextField.text.toString()
+        val taskName = taskTextField.text.toString()
         val taskTime = taskTimeTextField.text.toString().toInt()
         val isDone = false;
 
 
-        val task = ToDoModel(taskText, taskTime, isDone)
+        val task = ToDoModel(taskName, taskTime, isDone)
         database = FirebaseDatabase.getInstance().reference.child(user.getUid()).child("tasks").push()
         database.setValue(task)
     }
@@ -95,4 +88,8 @@ class MainActivity : AppCompatActivity() {
     fun clearTaskButton(){
 
     }
+}
+
+interface OnClickItemView{
+    fun updateCheckBox(id: String, hasChecked: Boolean)
 }
