@@ -1,13 +1,12 @@
 package com.example.collegeproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -16,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.single_recyclerview_item.*
 import kotlinx.android.synthetic.main.single_recyclerview_item.view.*
 class MainActivity() : AppCompatActivity(){
 
@@ -27,6 +25,7 @@ class MainActivity() : AppCompatActivity(){
     private lateinit var checkRef: DatabaseReference
     private lateinit var id:String
     private lateinit var getCheckReference: DatabaseReference
+    private var timerIntervalValue: Int? = 25
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -41,8 +40,6 @@ class MainActivity() : AppCompatActivity(){
         reference = FirebaseDatabase.getInstance().reference.child(user.uid)
 
 
-
-
         /*       Получение ссылок на кнопки     */
         val addButton = findViewById<View>(R.id.addButton)
         val deleteButton = findViewById<View>(R.id.delButton)
@@ -52,30 +49,49 @@ class MainActivity() : AppCompatActivity(){
         addButton.setOnClickListener { addTaskButton() }
         deleteButton.setOnClickListener { deleteTaskButton() }
         clearButton.setOnClickListener { clearTaskButton() }
+        secondButton.setOnClickListener { setChangeFirst() }
+        firstButton.setOnClickListener { setChangeSecond() }
+    }
+
+
+    private fun setChangeFirst() {
+        firstButton.isChecked = false
+        timerIntervalValue = 45
+    }
+    private fun setChangeSecond(){
+        secondButton.isChecked = false
+        timerIntervalValue = 25
     }
 
     /* Функции кнопок, которые вызываются выше */
-    fun addTaskButton(){
+    private fun addTaskButton(){
         id = reference.push().key.toString()
         val taskNameField = taskTextField.text.toString()
-        val taskTimeField = taskTimeTextField.text.toString()
+        val intervalCount: String = intervalCountView.text.toString()
         val isDone = false
 
 
-        val task = ToDoModel(id, taskNameField, taskTimeField)
+        val task = ToDoModel(id, taskNameField, intervalCount, timerIntervalValue!!, isDone)
         reference.child(id).setValue(task)
     }
 
-    fun deleteTaskButton(){
+    private fun deleteTaskButton(){
 
     }
 
-    fun clearTaskButton(){
+    private fun clearTaskButton(){
 
     }
 
+    fun goToTaskIntentValue(taskTime: Int): Intent{
+        val intent = Intent(this, TimerActivity::class.java)
+        intent.putExtra("taskTime", taskTime)
+        return intent
+    }
 
-   @Override
+
+
+
     override fun onStart(){
         super.onStart()
         val options = FirebaseRecyclerOptions.Builder<ToDoModel>()
@@ -89,9 +105,15 @@ class MainActivity() : AppCompatActivity(){
             }
 
             override fun onBindViewHolder(holder: MyViewHolder, position: Int, model: ToDoModel) {
-                holder.setTask(model.taskName)
-                holder.setChecked(isTaskDone = model.isDone, id = model.id)
-                holder.update(id = model.id, reference = reference)
+                holder.run {
+                    setTask(model.taskName)
+                    setChecked(isTaskDone = model.isDone, id = model.id, intervalTime = model.timeInterval)
+                    update(id = model.id, reference = reference)
+                    val goTask = goToTaskIntent()
+                    goTask.setOnClickListener {
+                        startActivity(goToTaskIntentValue(model.timeInterval))
+                    }
+                }
             }
 
         }
@@ -100,19 +122,19 @@ class MainActivity() : AppCompatActivity(){
     }
 
 
-    private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun setTask(taskName : String){
             val taskTextView: TextView = itemView.textView
             taskTextView.text = taskName
         }
 
-        fun setChecked(isTaskDone: String, id: String){
+        fun setChecked(isTaskDone: Boolean, id: String, intervalTime: Int){
             val isDoneCheckbox: CheckBox = itemView.findViewById(R.id.checkBox)
             if (isDoneCheckbox != null) {
-                isDoneCheckbox.isChecked = isTaskDone.toBoolean()
+                isDoneCheckbox.isChecked = isTaskDone
                 isDoneCheckbox.tag = id
-
+                isDoneCheckbox.text = intervalTime.toString()+"m"
             }
         }
         fun update(id:String, reference: DatabaseReference){
@@ -123,6 +145,11 @@ class MainActivity() : AppCompatActivity(){
                     reference.child(isDoneCheckbox.tag.toString()).child("done").setValue(isDoneCheckbox.isChecked.toString())
                 }
             }
+        }
+
+        fun goToTaskIntent(): ImageButton {
+            val timerButton: ImageButton = itemView.findViewById(R.id.goToTask)
+            return timerButton
         }
 
     }

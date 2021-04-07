@@ -6,10 +6,16 @@
     <string name="addButtonText">Add</string>
     <string name="delButtonText">Delete</string>
     <string name="clearButtonText">Clear</string>
+    <string name="goToTaskText">Start task in PomodoroTimer</string>
+    <string name="startTimerButtonText">Start</string>
+    <string name="pauseTimerButtonText">Pause</string>
+    <string name="goBackToTaskButtonText">Go to task</string>
+
 
     <string name="signUpButtonText">Sign Up</string>
     <string name="signInButtonText">Sign In</string>
 
     <string name="haveAccText">Already have an account?</string>
     <string name="backToRegistrText">Back to registration</string>
+    <string name="select_interval_time">Interval time</string>
 </resources>
