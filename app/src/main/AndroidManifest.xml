@@ -9,17 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CollegeProject">
-        <activity android:name=".TimerActivity"></activity>
-        <activity android:name=".loginActivity" />
-        <activity android:name=".MainActivity" />
         <activity
-            android:name=".AuthActivity"
-            android:label="Привет мир!">
+            android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".TimerActivity" />
+        <activity android:name=".loginActivity" />
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".AuthActivity"
+            android:label="Привет мир!">
+
         </activity>
     </application>
 

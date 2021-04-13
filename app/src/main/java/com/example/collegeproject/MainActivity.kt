@@ -83,9 +83,10 @@ class MainActivity() : AppCompatActivity(){
 
     }
 
-    fun goToTaskIntentValue(taskTime: Int): Intent{
+    fun goToTaskIntentValue(intervalTime: Int, intervalCount: String): Intent{
         val intent = Intent(this, TimerActivity::class.java)
-        intent.putExtra("taskTime", taskTime)
+        intent.putExtra("intervalTimeValue", intervalTime)
+        intent.putExtra("intervalCount", intervalCount)
         return intent
     }
 
@@ -111,7 +112,7 @@ class MainActivity() : AppCompatActivity(){
                     update(id = model.id, reference = reference)
                     val goTask = goToTaskIntent()
                     goTask.setOnClickListener {
-                        startActivity(goToTaskIntentValue(model.timeInterval))
+                        startActivity(goToTaskIntentValue(model.timeInterval, model.intervalCount))
                     }
                 }
             }
@@ -142,7 +143,7 @@ class MainActivity() : AppCompatActivity(){
             if (isDoneCheckbox != null) {
                 isDoneCheckbox.tag = id
                 isDoneCheckbox.setOnClickListener(){
-                    reference.child(isDoneCheckbox.tag.toString()).child("done").setValue(isDoneCheckbox.isChecked.toString())
+                    reference.child(isDoneCheckbox.tag.toString()).child("done").setValue(isDoneCheckbox.isChecked)
                 }
             }
         }
