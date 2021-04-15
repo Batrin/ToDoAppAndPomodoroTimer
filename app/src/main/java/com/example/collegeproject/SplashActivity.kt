@@ -10,16 +10,17 @@ import com.google.firebase.database.DatabaseReference
 import java.lang.Thread.sleep
 
 private lateinit var auth: FirebaseAuth
-private lateinit var user: FirebaseUser
+
 
 @Suppress("DEPRECATION")
 class SplashActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
         auth = FirebaseAuth.getInstance()
-        user = auth.currentUser
+        var user: FirebaseUser? = auth.currentUser
 
         val SPLASH_TIME_OUT:Long = 1500
         Handler().postDelayed({

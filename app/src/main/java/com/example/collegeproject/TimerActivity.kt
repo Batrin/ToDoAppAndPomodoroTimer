@@ -10,26 +10,48 @@ import kotlin.concurrent.timer
 var isRunning: Boolean = false
 var seconds: Long = 0
 private var milliSeconds: Long = 0
+private var countOfInterval: Int = 0
 
 class TimerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
-        var intervalCount: Int = 0
         val arguments = intent.extras
         if(arguments != null) {
             val taskTime: String = arguments.getInt("intervalTimeValue").toString()
-            intervalCount = arguments.getString("intervalCount")!!.toInt()
+            countOfInterval = arguments.getString("intervalCount")!!.toInt()
             timerView.setText(taskTime)
             milliSeconds = taskTime.toLong() * 60000
         }
 
-        startButton.setOnClickListener { startTimer(intervalCount) }
+        startButton.setOnClickListener { startTimer(countOfInterval) }
     }
-
+    private fun startWorkTimer(timer: CountDownTimer){
+        timer.start()
+    }
+    private fun startRestTimer(intervalCounter: Int){
+        val timer = object :  CountDownTimer(30000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                var seconds = millisUntilFinished / 1000
+                val minutes = seconds / 60
+                seconds %= 60
+                timerView.text = String.format("%02d", minutes) + ":" + String.format("%02d", seconds)
+            }
+            override fun onFinish() {
+                if(intervalCounter == 0){
+                    whatTimeNowView.text = "Задача выполнена"
+                }
+                else{
+                    whatTimeNowView.text = "Рабочее время."
+                    startTimer(intervalCounter)
+                }
+            }
+        }.start()
+    }
     private fun startTimer(intervalCounter: Int) {
         intervalCounterView.text = "Интервалы" + intervalCounter
         var counter = intervalCounter
+
         val timer = object :  CountDownTimer(milliSeconds, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 var seconds = millisUntilFinished / 1000
@@ -40,12 +62,18 @@ class TimerActivity : AppCompatActivity() {
 
             }
             override fun onFinish() {
-                while(counter > 0){
+
+                while(counter >= 0){
                     counter--
-                    this.start()
+                    if(whatTimeNowView.text == "Рабочее время."){
+                        startRestTimer(counter)
+                        whatTimeNowView.text = "Время отдыха.Передохните и снова за работу!"
+                    }
                 }
             }
         }.start()
+
+
 
     }
 }
