@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashActivity"
-    android:background="@android:color/holo_green_dark">
+    android:background="@color/MainThemeColor">
 
     <ImageView
-        android:layout_width="80dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_done_all_24"
         app:layout_constraintBottom_toBottomOf="parent"

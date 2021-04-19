@@ -6,25 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:background="@android:color/holo_green_dark">
+    android:background="@color/MainThemeColor">
 
-    <EditText
-        android:id="@+id/taskTextField"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/editTextHint"
-        android:backgroundTint="@color/white"
-        android:textColorHint="@color/white"/>
-    <EditText
-        android:id="@+id/intervalCountView"
+        android:id="@+id/taskTextCard"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="20dp">
+        <EditText
+            android:id="@+id/taskTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/editTextHint"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textColorHint="@android:color/darker_gray"
+            android:layout_margin="8dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/taskTextField"
-        android:hint="Type interval count here..."
-        android:backgroundTint="@color/white"
-        android:textColorHint="@color/white"/>
+        android:id="@+id/intervalCountCard"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="20dp"
+        android:layout_below="@id/taskTextCard">
+        <EditText
+            android:id="@+id/intervalCountView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskTimeTextHint"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textColorHint="@android:color/darker_gray"
+            android:layout_margin="8dp"/>
+    </androidx.cardview.widget.CardView>
+
     <RadioGroup
-        android:layout_below="@id/intervalCountView"
+        android:layout_below="@id/intervalCountCard"
         android:id="@+id/timeIntervalGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -33,7 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="10dp">
+            android:layout_marginStart="10dp"
+           >
 
             <TextView
                 android:id="@+id/selectTimeIntervalView"

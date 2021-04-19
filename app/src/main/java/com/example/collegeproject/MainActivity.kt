@@ -79,6 +79,8 @@ class MainActivity : AppCompatActivity(){
         val taskNameField = taskTextField.text.toString()
         val intervalCount: String = intervalCountView.text.toString()
         val isDone = false
+        taskTextField.text.clear()
+        intervalCountView.text.clear()
 
 
         val task = ToDoModel(id, taskNameField, intervalCount, timerIntervalValue!!, isDone)
