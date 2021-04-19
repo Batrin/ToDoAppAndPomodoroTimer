@@ -1,6 +1,7 @@
 package com.example.collegeproject
 
 import android.content.Intent
+import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +21,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.single_recyclerview_item.*
 import kotlinx.android.synthetic.main.single_recyclerview_item.view.*
 
 
-class MainActivity() : AppCompatActivity(){
+class MainActivity : AppCompatActivity(){
 
     private lateinit var auth: FirebaseAuth
     private lateinit var user: FirebaseUser
@@ -51,12 +52,10 @@ class MainActivity() : AppCompatActivity(){
 
         /*       Получение ссылок на кнопки     */
         val addButton = findViewById<View>(R.id.addButton)
-        val deleteButton = findViewById<View>(R.id.delButton)
         val clearButton = findViewById<View>(R.id.clearButton)
 
         /* Установка событий клика на кнопки на главной странице */
         addButton.setOnClickListener { addTaskButton() }
-        deleteButton.setOnClickListener { deleteTaskButton() }
         clearButton.setOnClickListener { clearTaskButton() }
         secondButton.setOnClickListener { setChangeFirst() }
         firstButton.setOnClickListener { setChangeSecond() }
@@ -86,18 +85,15 @@ class MainActivity() : AppCompatActivity(){
         reference.child(id).setValue(task)
     }
 
-    private fun deleteTaskButton(){
-
-    }
-
     private fun clearTaskButton(){
         reference.removeValue()
     }
 
-    fun goToTaskIntentValue(intervalTime: Int, intervalCount: String): Intent{
+    fun goToTaskIntentValue(intervalTime: Int, intervalCount: String, taskId: String): Intent{
         val intent = Intent(this, TimerActivity::class.java)
         intent.putExtra("intervalTimeValue", intervalTime)
         intent.putExtra("intervalCount", intervalCount)
+        intent.putExtra("idTask", taskId)
         return intent
     }
 
@@ -119,14 +115,18 @@ class MainActivity() : AppCompatActivity(){
             }
 
             override fun onBindViewHolder(holder: MyViewHolder, position: Int, model: ToDoModel) {
-
                 holder.run {
                     setTask(model.taskName)
                     setChecked(isTaskDone = model.isDone, id = model.id, intervalTime = model.timeInterval)
-                    update(id = model.id, reference = reference)
                     val goTask = goToTaskIntent()
+                    update(id = model.id, reference = reference)
                     goTask.setOnClickListener {
-                        startActivity(goToTaskIntentValue(model.timeInterval, model.intervalCount))
+                        if(getTaskStatus()){
+                            goTask.isClickable = false
+                        }
+                        else{
+                            startActivity(goToTaskIntentValue(model.timeInterval, model.intervalCount, model.id))
+                        }
                     }
                 }
             }
@@ -165,10 +165,11 @@ class MainActivity() : AppCompatActivity(){
             }
         }
         fun update(id:String, reference: DatabaseReference){
+            val imageButton:ImageButton = itemView.findViewById(R.id.goToTask)
             val isDoneCheckbox: CheckBox = itemView.findViewById(R.id.checkBox)
             if (isDoneCheckbox != null) {
                 isDoneCheckbox.tag = id
-                isDoneCheckbox.setOnClickListener(){
+                isDoneCheckbox.setOnClickListener {
                     reference.child(isDoneCheckbox.tag.toString()).child("done").setValue(isDoneCheckbox.isChecked)
                 }
             }
@@ -177,6 +178,12 @@ class MainActivity() : AppCompatActivity(){
         fun goToTaskIntent(): ImageButton {
             val timerButton: ImageButton = itemView.findViewById(R.id.goToTask)
             return timerButton
+        }
+
+        fun getTaskStatus(): Boolean{
+            val isDoneCheckBox: CheckBox = itemView.findViewById(R.id.checkBox)
+            val isDone: Boolean = isDoneCheckBox.isChecked
+            return isDone
         }
     }
 }

@@ -54,13 +54,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"/>
         <Button
-            android:id="@+id/pauseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pauseTimerButtonText"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"/>
-        <Button
             android:id="@+id/goBackToTaskButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
