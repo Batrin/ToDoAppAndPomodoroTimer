@@ -1,21 +1,29 @@
 package com.example.collegeproject
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.single_recyclerview_item.view.*
+
+
 class MainActivity() : AppCompatActivity(){
 
     private lateinit var auth: FirebaseAuth
@@ -25,6 +33,7 @@ class MainActivity() : AppCompatActivity(){
     private lateinit var checkRef: DatabaseReference
     private lateinit var id:String
     private lateinit var getCheckReference: DatabaseReference
+
     private var timerIntervalValue: Int? = 25
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -37,7 +46,7 @@ class MainActivity() : AppCompatActivity(){
         /* Получние объекта аутентификации и получение текущего авторизованного пользователя */
         auth = FirebaseAuth.getInstance()
         user = auth.currentUser
-        reference = FirebaseDatabase.getInstance().reference.child(user.uid)
+        reference = FirebaseDatabase.getInstance().reference.child(user.uid).child("tasks")
 
 
         /*       Получение ссылок на кнопки     */
@@ -51,9 +60,11 @@ class MainActivity() : AppCompatActivity(){
         clearButton.setOnClickListener { clearTaskButton() }
         secondButton.setOnClickListener { setChangeFirst() }
         firstButton.setOnClickListener { setChangeSecond() }
+
+
     }
 
-
+    /* Установка времени интервала для таймера, радиокнопки */
     private fun setChangeFirst() {
         firstButton.isChecked = false
         timerIntervalValue = 45
@@ -80,7 +91,7 @@ class MainActivity() : AppCompatActivity(){
     }
 
     private fun clearTaskButton(){
-
+        reference.removeValue()
     }
 
     fun goToTaskIntentValue(intervalTime: Int, intervalCount: String): Intent{
@@ -94,6 +105,7 @@ class MainActivity() : AppCompatActivity(){
 
 
     override fun onStart(){
+
         super.onStart()
         val options = FirebaseRecyclerOptions.Builder<ToDoModel>()
                 .setQuery(reference, ToDoModel::class.java)
@@ -103,9 +115,11 @@ class MainActivity() : AppCompatActivity(){
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
                 return MyViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.single_recyclerview_item, parent, false))
+
             }
 
             override fun onBindViewHolder(holder: MyViewHolder, position: Int, model: ToDoModel) {
+
                 holder.run {
                     setTask(model.taskName)
                     setChecked(isTaskDone = model.isDone, id = model.id, intervalTime = model.timeInterval)
@@ -118,12 +132,24 @@ class MainActivity() : AppCompatActivity(){
             }
 
         }
+        val itemTouchCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val ref: DatabaseReference = adapter.getRef(position)
+                ref.removeValue()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback).attachToRecyclerView(taskRecyclerView)
         taskRecyclerView.adapter = adapter
         adapter.startListening()
     }
 
 
-    private class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun setTask(taskName : String){
             val taskTextView: TextView = itemView.textView
@@ -152,10 +178,7 @@ class MainActivity() : AppCompatActivity(){
             val timerButton: ImageButton = itemView.findViewById(R.id.goToTask)
             return timerButton
         }
-
     }
-
-
 }
 
 
