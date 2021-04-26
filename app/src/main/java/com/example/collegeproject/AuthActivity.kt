@@ -37,7 +37,6 @@ class AuthActivity : AppCompatActivity() {
     private fun perfomRegister(){
         val email = emailTextField.text.toString()
         val password = passwordTextField.text.toString()
-        val name = NameTextField.text.toString()
 
         if(email.isEmpty() || password.isEmpty()){
             Toast.makeText(this, "Please enter all of the data", Toast.LENGTH_SHORT).show()
@@ -50,7 +49,6 @@ class AuthActivity : AppCompatActivity() {
                     else if(it.isSuccessful){
                         emailTextField.text.clear()
                         passwordTextField.text.clear()
-                        NameTextField.text.clear()
                         Toast.makeText(this, "Registration was successful!", Toast.LENGTH_SHORT)
                     }
                 }

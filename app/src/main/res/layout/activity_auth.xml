@@ -7,28 +7,35 @@
     tools:context=".AuthActivity"
     android:orientation="vertical"
     android:background="@color/MainThemeColor">
-
-    <EditText
-        android:id="@+id/emailTextField"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:layout_margin="10dp"/>
+        app:cardCornerRadius="20dp"
+        android:layout_margin="10dp">
 
-    <EditText
-        android:id="@+id/passwordTextField"
+        <EditText
+            android:id="@+id/emailTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_margin="10dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:layout_margin="10dp"
-        android:inputType="textPassword"/>
+        app:cardCornerRadius="20dp"
+        android:layout_margin="10dp">
 
-    <EditText
-        android:id="@+id/NameTextField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        android:layout_margin="10dp"/>
+        <EditText
+            android:id="@+id/passwordTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:layout_margin="10dp"
+            android:inputType="textPassword"/>
+    </androidx.cardview.widget.CardView>
+
 
     <Button
         android:id="@+id/signUpButton"

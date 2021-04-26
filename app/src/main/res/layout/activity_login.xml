@@ -8,20 +8,33 @@
     android:orientation="vertical"
     android:background="@color/MainThemeColor">
 
-    <EditText
-        android:id="@+id/emailText"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:layout_margin="10dp"/>
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
         android:layout_margin="10dp"
-        android:inputType="textPassword"/>
+        app:cardCornerRadius="20dp">
+        <EditText
+            android:id="@+id/emailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_margin="10dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="20dp">
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:layout_margin="10dp"
+            android:inputType="textPassword"/>
+
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/signInButton"

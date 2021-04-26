@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +41,7 @@ class MainActivity : AppCompatActivity(){
 
         taskRecyclerView.layoutManager = LinearLayoutManager(this)
 
+
         /* Получние объекта аутентификации и получение текущего авторизованного пользователя */
         auth = FirebaseAuth.getInstance()
         user = auth.currentUser
@@ -53,13 +51,23 @@ class MainActivity : AppCompatActivity(){
         /*       Получение ссылок на кнопки     */
         val addButton = findViewById<View>(R.id.addButton)
         val clearButton = findViewById<View>(R.id.clearButton)
+        val logOutButton = findViewById<View>(R.id.logIn)
 
         /* Установка событий клика на кнопки на главной странице */
         addButton.setOnClickListener { addTaskButton() }
         clearButton.setOnClickListener { clearTaskButton() }
         secondButton.setOnClickListener { setChangeFirst() }
         firstButton.setOnClickListener { setChangeSecond() }
+        logOutButton.setOnClickListener { logOut() }
 
+
+    }
+
+    private fun logOut() {
+        val intent = Intent(this, loginActivity::class.java)
+        auth.signOut()
+        finish()
+        startActivity(intent)
 
     }
 
@@ -79,12 +87,18 @@ class MainActivity : AppCompatActivity(){
         val taskNameField = taskTextField.text.toString()
         val intervalCount: String = intervalCountView.text.toString()
         val isDone = false
-        taskTextField.text.clear()
-        intervalCountView.text.clear()
 
 
-        val task = ToDoModel(id, taskNameField, intervalCount, timerIntervalValue!!, isDone)
-        reference.child(id).setValue(task)
+        if(taskNameField == "" || intervalCount == ""){
+            Toast.makeText(this, "Enter all of the data, please", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            val task = ToDoModel(id, taskNameField, intervalCount, timerIntervalValue!!, isDone)
+            reference.child(id).setValue(task)
+            taskTextField.text.clear()
+            intervalCountView.text.clear()
+        }
+
     }
 
     private fun clearTaskButton(){

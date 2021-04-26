@@ -57,7 +57,7 @@ class TimerActivity : AppCompatActivity() {
             idTask = arguments.getString("idTask").toString()
             timerView.text = String.format("%s",taskTime) + ":00"
             milliSeconds = taskTime.toLong() * 60000
-            intervalCounterView.text = "Интервалы : " + countOfInterval
+            intervalCounterView.text = "Осталось интервалов : " + countOfInterval
         }
 
         /*  Установка обработчиков кликов на кнопки активности таймера */
@@ -93,7 +93,8 @@ class TimerActivity : AppCompatActivity() {
 
     /* Функция для начала таймера */
     private fun startWorkTimer() {
-        intervalCounterView.text = "Интервалы : " + countOfInterval
+        startButton.isClickable = false
+        intervalCounterView.text = "Осталось интервалов : " + countOfInterval
         if(countOfInterval == 0){
             whatTimeNowView.text = "Задача выполнена"
             val intent = Intent(this, MainActivity::class.java)
@@ -114,6 +115,8 @@ class TimerActivity : AppCompatActivity() {
                 val minutes = seconds / 60
                 seconds %= 60
                 timerView.text = String.format("%02d", minutes) + ":" + String.format("%02d", seconds)
+
+
             }
             override fun onFinish() {
                 playSound(soundPlayer)
@@ -134,6 +137,7 @@ class TimerActivity : AppCompatActivity() {
                 val minutes = seconds / 60
                 seconds %= 60
                 timerView.text = String.format("%02d", minutes) + ":" + String.format("%02d", seconds)
+
             }
             override fun onFinish() {
                 vibrate()
